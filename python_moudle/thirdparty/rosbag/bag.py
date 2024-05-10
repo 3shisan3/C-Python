@@ -50,6 +50,10 @@ import threading
 import time
 import yaml
 
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(project_root)
+# print(sys.path)
+
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 

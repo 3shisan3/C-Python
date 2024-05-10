@@ -30,8 +30,8 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-from .bag import Bag, Compression, ROSBagException, ROSBagFormatException, ROSBagUnindexedException
+from bag import Bag, Compression, ROSBagException, ROSBagFormatException, ROSBagUnindexedException
 
 # Import rosbag main to be used by the rosbag executable
-from .rosbag_main import rosbagmain
+from rosbag.rosbag_main import rosbagmain
 

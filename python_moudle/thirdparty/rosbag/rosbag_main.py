@@ -47,8 +47,8 @@ except ImportError:
 import roslib.message
 import roslib.packages
 
-from .bag import Bag, Compression, ROSBagException, ROSBagFormatException, ROSBagUnindexedException, ROSBagEncryptNotSupportedException, ROSBagEncryptException
-from .migration import MessageMigrator, fixbag2, checkbag
+from bag import Bag, Compression, ROSBagException, ROSBagFormatException, ROSBagUnindexedException, ROSBagEncryptNotSupportedException, ROSBagEncryptException
+from migration import MessageMigrator, fixbag2, checkbag
 
 def print_trans(old, new, indent):
     from_txt = '%s [%s]' % (old._type, old._md5sum)
