@@ -29,9 +29,16 @@
 # LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
+#
+# Revision $Id$
+# $Author$
 
-from .bag import Bag, Compression, ROSBagException, ROSBagFormatException, ROSBagUnindexedException
+"""
+Provides the L{ROSLibException} class, which is common to many roslib libraries.
+"""
 
-# Import rosbag main to be used by the rosbag executable
-from .rosbag_main import rosbagmain
-
+class ROSLibException(Exception):
+    """
+    Base class for exceptions in roslib    
+    """
+    pass

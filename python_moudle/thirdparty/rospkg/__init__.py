@@ -1,6 +1,6 @@
 # Software License Agreement (BSD License)
 #
-# Copyright (c) 2009, Willow Garage, Inc.
+# Copyright (c) 2011, Willow Garage, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -30,8 +30,29 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-from .bag import Bag, Compression, ROSBagException, ROSBagFormatException, ROSBagUnindexedException
+"""
+Base ROS python library for manipulating ROS packages and stacks.
+"""
 
-# Import rosbag main to be used by the rosbag executable
-from .rosbag_main import rosbagmain
+from .common import MANIFEST_FILE, ResourceNotFound, STACK_FILE
+from .environment import get_etc_ros_dir, get_log_dir, get_ros_home, \
+    get_ros_package_path, get_ros_paths, get_ros_root, \
+    get_test_results_dir, on_ros_path
+from .manifest import InvalidManifest, Manifest, parse_manifest_file
+from .rospack import expand_to_packages, get_package_name, \
+    get_stack_version_by_dir, list_by_path, RosPack, RosStack
 
+# same version as in:
+# - setup.py
+# - stdeb.cfg
+__version__ = '1.1.10'
+
+__all__ = (
+    'MANIFEST_FILE', 'ResourceNotFound', 'STACK_FILE',
+    'get_etc_ros_dir', 'get_log_dir', 'get_ros_home',
+    'get_ros_package_path', 'get_ros_paths', 'get_ros_root',
+    'get_test_results_dir', 'on_ros_path',
+    'InvalidManifest', 'Manifest', 'parse_manifest_file',
+    'get_package_name', 'RosPack', 'RosStack',
+    'list_by_path', 'expand_to_packages', 'get_stack_version_by_dir',
+)

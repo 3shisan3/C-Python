@@ -1,6 +1,6 @@
 # Software License Agreement (BSD License)
 #
-# Copyright (c) 2009, Willow Garage, Inc.
+# Copyright (c) 2008, Willow Garage, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -30,8 +30,41 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-from .bag import Bag, Compression, ROSBagException, ROSBagFormatException, ROSBagUnindexedException
+"""Numpy support."""
 
-# Import rosbag main to be used by the rosbag executable
-from .rosbag_main import rosbagmain
+from . generate_struct import serialize
 
+# this could obviously be directly generated, but it's nice to abstract
+
+# maps ros msg types to numpy types
+NUMPY_DTYPE = {
+    'float32': 'numpy.float32',
+    'float64': 'numpy.float64',
+    'bool': 'numpy.bool',
+    'int8': 'numpy.int8',
+    'int16': 'numpy.int16',
+    'int32': 'numpy.int32',
+    'int64': 'numpy.int64',
+    'uint8': 'numpy.uint8',
+    'uint16': 'numpy.uint16',
+    'uint32': 'numpy.uint32',
+    'uint64': 'numpy.uint64',
+    # deprecated type
+    'char': 'numpy.uint8',
+    'byte': 'numpy.int8',
+    }
+
+
+# TODO: this doesn't explicitly specify little-endian byte order on the numpy data instance
+def unpack_numpy(var, count, dtype, buff):
+    """Create numpy deserialization code."""
+    return var + ' = numpy.frombuffer(%s, dtype=%s, count=%s)' % (buff, dtype, count)
+
+
+def pack_numpy(var):
+    """
+    Create numpy serialization code.
+
+    :param vars: name of variables to pack
+    """
+    return serialize('%s.tostring()' % var)

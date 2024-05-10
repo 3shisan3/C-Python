@@ -1,6 +1,6 @@
 # Software License Agreement (BSD License)
 #
-# Copyright (c) 2009, Willow Garage, Inc.
+# Copyright (c) 2011, Willow Garage, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -30,8 +30,28 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-from .bag import Bag, Compression, ROSBagException, ROSBagFormatException, ROSBagUnindexedException
+"""
+Common definitions for rospkg modules.
+"""
 
-# Import rosbag main to be used by the rosbag executable
-from .rosbag_main import rosbagmain
+MANIFEST_FILE = 'manifest.xml'
+PACKAGE_FILE = 'package.xml'
+STACK_FILE = 'stack.xml'
+ROS_STACK = 'ros'
 
+
+class ResourceNotFound(Exception):
+    """
+    A ROS filesystem resource was not found.
+    """
+
+    def __init__(self, msg, ros_paths=None):
+        super(ResourceNotFound, self).__init__(msg)
+        self.ros_paths = ros_paths
+
+    def __str__(self):
+        s = self.args[0]  # python 2.6
+        if self.ros_paths:
+            for i, p in enumerate(self.ros_paths):
+                s = s + '\nROS path [%s]=%s' % (i, p)
+        return s

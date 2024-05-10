@@ -1,4 +1,11 @@
-import thirdparty.rosbag
+import os
+import sys
+
+dependlib_root = os.path.abspath(os.path.join(os.path.dirname(__file__), './thirdparty'))
+sys.path.insert(0, dependlib_root)
+print(sys.path)
+
+import rosbag
 
 # 获取ros包中指定topic的内容，二进制数据返回
 def getRosMsgInfo(bag_path, topic_name):

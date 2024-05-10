@@ -30,8 +30,27 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-from .bag import Bag, Compression, ROSBagException, ROSBagFormatException, ROSBagUnindexedException
+import sys
 
-# Import rosbag main to be used by the rosbag executable
-from .rosbag_main import rosbagmain
+from . rosenv import get_master_uri, ROS_MASTER_URI, ROS_NAMESPACE, ROS_HOSTNAME, ROS_IP, ROS_IPV6
+from . masterapi import Master, MasterFailure, MasterError, MasterException
+from . masterapi import is_online as is_master_online
+
+# bring in names submodule
+from . import names
+
+def myargv(argv=None):
+    """
+    Remove ROS remapping arguments from sys.argv arguments.
+    
+    :returns: copy of sys.argv with ROS remapping arguments removed, ``[str]``
+    """
+    if argv is None:
+        argv = sys.argv
+    return [a for a in argv if not names.REMAP in a]
+
+__all__ = ['myargv',
+        'get_master_uri', 'ROS_MASTER_URI', 'ROS_NAMESPACE', 'ROS_HOSTNAME', 'ROS_IP', 'ROS_IPV6',
+        'Master', 'MasterFailure', 'MasterError', 'MasterException',
+        'is_master_online']
 

@@ -29,9 +29,6 @@
 # LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-
-from .bag import Bag, Compression, ROSBagException, ROSBagFormatException, ROSBagUnindexedException
-
-# Import rosbag main to be used by the rosbag executable
-from .rosbag_main import rosbagmain
+#
+# Revision $Id: __init__.py 5735 2009-08-20 21:31:27Z sfkwc $
 

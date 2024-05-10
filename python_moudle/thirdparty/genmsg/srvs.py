@@ -1,6 +1,6 @@
 # Software License Agreement (BSD License)
 #
-# Copyright (c) 2009, Willow Garage, Inc.
+# Copyright (c) 2008, Willow Garage, Inc.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -30,8 +30,49 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-from .bag import Bag, Compression, ROSBagException, ROSBagFormatException, ROSBagUnindexedException
+"""
+ROS Service Description Language Spec
+Implements http://ros.org/wiki/srv
+"""
 
-# Import rosbag main to be used by the rosbag executable
-from .rosbag_main import rosbagmain
+import os
+import sys
 
+from . names import is_legal_resource_name, is_legal_resource_base_name, package_resource_name, resource_name
+
+class SrvSpec(object):
+    
+    def __init__(self, request, response, text, full_name = '', short_name = '', package = ''):
+
+        alt_package, alt_short_name = package_resource_name(full_name)
+        if not package:
+            package = alt_package
+        if not short_name:
+            short_name = alt_short_name
+
+        self.request = request
+        self.response = response
+        self.text = text
+        self.full_name = full_name
+        self.short_name = short_name
+        self.package = package
+
+        
+    def __eq__(self, other):
+        if not other or not isinstance(other, SrvSpec):
+            return False
+        return self.request == other.request and \
+               self.response == other.response and \
+               self.text == other.text and \
+               self.full_name == other.full_name and \
+               self.short_name == other.short_name and \
+               self.package == other.package
+    
+    def __ne__(self, other):
+        if not other or not isinstance(other, SrvSpec):
+            return True
+        return not self.__eq__(other)
+
+    def __repr__(self):
+        return "SrvSpec[%s, %s]"%(repr(self.request), repr(self.response))
+    
