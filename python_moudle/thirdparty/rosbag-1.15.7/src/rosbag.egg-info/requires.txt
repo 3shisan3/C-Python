@@ -1,9 +1,0 @@
-genmsg
-genpy<2000
-genpy<2000
-gnupg
-pycryptodome
-pycryptodomex
-roslib
-rospkg
-rospy

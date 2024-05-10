@@ -1,4 +1,4 @@
-import rosbag
+import thirdparty.rosbag
 
 # 获取ros包中指定topic的内容，二进制数据返回
 def getRosMsgInfo(bag_path, topic_name):
