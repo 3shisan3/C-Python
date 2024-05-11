@@ -16,7 +16,16 @@ def getRosMsgInfo(bag_path, topic_name):
         header_seq = header.seq 
         stamp_sec = header.stamp.secs
         stamp_nsec = header.stamp.nsecs
-        data = msg.data #bytes
         print('{:0>5d} {} {} {}'.format(index, header_seq, stamp_sec, stamp_nsec))
         index += 1
-        
+
+# ----test code-----   
+# if __name__ == "__main__":  
+#     if len(sys.argv) != 3:  
+#         print("Usage: python script.py file_path topic_name")  
+#         sys.exit(1)  
+      
+#     file_path = sys.argv[1]  
+#     match_name = sys.argv[2]  
+      
+#     getRosMsgInfo(file_path, match_name)
