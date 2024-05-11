@@ -10,6 +10,7 @@ rosgraph_msgs                       1.11.3
 roslib                              1.14.6
 rospkg                              1.1.10
 rospy                               1.15.7
+std_msgs                            0.5.13
 gnupg                               0.5.2
 Cryoto(pycryptodome)                3.20.0
 
