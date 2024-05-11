@@ -1,4 +1,6 @@
 Moudle                              Version
+catkin                              0.7.18
+catkin_pkg                          0.4.13
 genmsg                              0.5.12
 genpy                               0.6.14
 rosbag                              1.15.7
