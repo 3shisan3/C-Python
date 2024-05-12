@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.10)  
   
 project(C++_call_Python)  
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
   
 # 查找Python库  
 find_package(PythonLibs 3 REQUIRED)
@@ -10,9 +12,9 @@ include_directories(${PYTHON_INCLUDE_DIRS})
 
 # C++代码路径
 set(ccCodePath ${CMAKE_CURRENT_SOURCE_DIR}/c++)
-  
+
 # 添加你的源代码文件  
-add_executable(${PROJECT_NAME} ${ccCodePath}/main.cpp)  
+add_executable(${PROJECT_NAME} ${ccCodePath}/main.cpp)
   
 # 链接Python库  
 target_link_libraries(${PROJECT_NAME} ${PYTHON_LIBRARIES})  
