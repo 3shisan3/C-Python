@@ -13,6 +13,7 @@ include_directories(${PYTHON_INCLUDE_DIRS})
 # C++代码路径
 set(ccCodePath ${CMAKE_CURRENT_SOURCE_DIR}/c++)
 
+include_directories(${ccCodePath}/thirdparty/include)
 # 添加你的源代码文件  
 add_executable(${PROJECT_NAME} ${ccCodePath}/main.cpp)
   
