@@ -13,9 +13,17 @@ include_directories(${PYTHON_INCLUDE_DIRS})
 # C++代码路径
 set(ccCodePath ${CMAKE_CURRENT_SOURCE_DIR}/c++)
 
-include_directories(${ccCodePath}/thirdparty/include)
-# 添加你的源代码文件  
-add_executable(${PROJECT_NAME} ${ccCodePath}/main.cpp)
+# 添加源代码文件  
+file(GLOB_RECURSE SOURCES ${ccCodePath}/src/*.cpp)  
+# 添加头文件目录 
+include_directories(${ccCodePath}/thirdparty/include
+                    ${ccCodePath}/src
+)
+
+# 生成可执行程序  
+add_executable(${PROJECT_NAME} ${SOURCES}
+                               ${ccCodePath}/main.cpp
+)
   
 # 链接Python库  
 target_link_libraries(${PROJECT_NAME} ${PYTHON_LIBRARIES})  
