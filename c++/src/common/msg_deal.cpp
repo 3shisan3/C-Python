@@ -6,7 +6,8 @@
 #include "pybind11/embed.h"
 #include "pybind11/pytypes.h"
 
-#include "base/json.hpp"
+#include "json.hpp"
+#include "utils_method.h"
 
 namespace py = pybind11;
 using json = ::nlohmann::json;
@@ -90,6 +91,21 @@ void object_to_json(py::object obj, json &parent)
     }
 }
 
+MsgDeal::MsgDeal(const std::string &pathStr, PATH_TARGTE flag)
+{
+    switch (flag)
+    {
+    case RUN_PATH:
+        m_pyMoudlePath_  = findSubdirectoryPath((pathStr + "/../../../"), "python_moudle");
+        break;
+    case PY_PATH:
+        m_pyMoudlePath_ = pathStr;
+        break;
+    default:
+        break;
+    }
+}
+
 void MsgDeal::readRosBagContent(const std::string &bagPath, const std::vector<std::string> &vTopicName,
                                 unsigned int startStamp, unsigned int endStamp)
 {
@@ -98,7 +114,8 @@ void MsgDeal::readRosBagContent(const std::string &bagPath, const std::vector<st
     try
     {
         auto sys = py::module::import("sys");
-        sys.attr("path").attr("insert")(0, "../python_moudle/thirdparty/");
+        auto pathStr = m_pyMoudlePath_ + "/thirdparty/";
+        sys.attr("path").attr("insert")(0, pathStr);
 
         auto rsBag = py::module::import("rosbag");
         auto bag = rsBag.attr("Bag")(bagPath);

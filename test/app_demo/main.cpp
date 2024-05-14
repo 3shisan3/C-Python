@@ -104,14 +104,25 @@ int main()
 
 #include "common/msg_deal.h"
 
+// 获取程序运行路径
+std::string getCurrentFolder(int argc, char *argv[])
+{
+    std::string execPath = argv[0];
+
+    size_t lastSLashPos = execPath.find_last_of("/");
+
+    return execPath.substr(0, lastSLashPos);
+}
+
+
 int main(int argc, char *argv[])
 {
     // 检查是否提供了足够的参数
     if (argc < 2)
     {
         std::cerr << "Usage: " << argv[0] << " <file_path>" << std::endl;
-        auto test = new MsgDeal();
-        test->readRosBagContent("../test/test.bag");
+        auto test = new MsgDeal(getCurrentFolder(argc, argv));
+        test->readRosBagContent("../test.bag");
         return 1;
     }
 

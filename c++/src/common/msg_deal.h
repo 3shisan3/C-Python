@@ -25,8 +25,17 @@ Version history
 class MsgDeal
 {
 public:
+    enum PATH_TARGTE
+    {
+        RUN_PATH,
+        PY_PATH
+    };
+
+    MsgDeal() : m_pyMoudlePath_("../python_moudle") {};
+    explicit MsgDeal(const std::string &path, PATH_TARGTE flag = RUN_PATH);
+
     /**
-     * @brief 查询指定断点续传下载任务状态
+     * @brief 解析指定rosbag包中数据
      * 
      * @param[in] bagPath               解析rogbag的文件路径
      * @param[in] vTopicName            指定想要获取的topic集合
@@ -40,6 +49,10 @@ public:
 protected:
     // topic -> dealfunc
     std::unordered_map<std::string, std::function<void(const std::string &)>> m_funcsMap;
+
+private:
+    // todo 可考虑使用全局变量，有其他对象涉及使用python
+    std::string m_pyMoudlePath_;
 
 };
 

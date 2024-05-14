@@ -1,7 +1,14 @@
+# c++编译产出
 build
+sdk
+bin
+
+# python产出
 .cache
 __pycache__
 
+# 打包
 *.tar.gz
 
+# 编辑器输出
 .vscode
