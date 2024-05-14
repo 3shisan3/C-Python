@@ -12,6 +12,7 @@ rospkg                              1.1.10
 rospy                               1.15.7
 std_msgs                            0.5.13
 gnupg                               0.5.2
+pyparsing                           2.4.7
 Cryoto(pycryptodome)                3.20.0
 
 

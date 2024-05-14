@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
     {
         std::cerr << "Usage: " << argv[0] << " <file_path>" << std::endl;
         auto test = new MsgDeal();
-        test->readRosBagContent("../python_moudle/test.bag");
+        test->readRosBagContent("../test/test.bag");
         return 1;
     }
 
