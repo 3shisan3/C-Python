@@ -16,6 +16,7 @@ Version history
 #ifndef MSG_DEAL_BASE_H
 #define MSG_DEAL_BASE_H
 
+#include <functional>
 #include <string>
 #include <unordered_map>
 
@@ -23,12 +24,14 @@ Version history
 class MsgDeal
 {
 public:
-    // std::unordered_map<std::string, std::function<void()>> s_funcsMap;
-
-protected:
     void readRosBagContent(const std::string &bagPath);
 
     void readRosBagContent(const std::string &bagPath, const std::string &topicName);
+
+protected:
+    // topic -> dealfunc
+    std::unordered_map<std::string, std::function<void(const std::string &)>> m_funcsMap;
+
 };
 
 

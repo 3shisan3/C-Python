@@ -1,4 +1,4 @@
-#include "pybind11/pybind11.h"
+/* #include "pybind11/pybind11.h"
 #include "pybind11/embed.h"
 #include "pybind11/pytypes.h"
 #include <pybind11/functional.h>
@@ -98,4 +98,16 @@ int main()
         std::cout << e.what() << std::endl;
     }
     return 0;
+} */
+
+#include <iostream>
+
+#include "common/msg_deal.h"
+
+int main()
+{
+  auto test = new MsgDeal();
+  test->readRosBagContent("../python_moudle/test.bag");
+
+  return 0;
 }
