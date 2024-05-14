@@ -24,9 +24,17 @@ Version history
 class MsgDeal
 {
 public:
-    void readRosBagContent(const std::string &bagPath);
-
-    void readRosBagContent(const std::string &bagPath, const std::string &topicName);
+    /**
+     * @brief 查询指定断点续传下载任务状态
+     * 
+     * @param[in] bagPath               解析rogbag的文件路径
+     * @param[in] vTopicName            指定想要获取的topic集合
+     * @param[in] startStamp            过滤想要的时间段内信息，开始时间戳  （秒）
+     * @param[in] endStamp              过滤想要的时间段内信息，结束时间戳  （秒）
+     * 
+     */
+    void readRosBagContent(const std::string &bagPath, const std::vector<std::string> &vTopicName = {},
+                           unsigned int startStamp = 0, unsigned int endStamp = 0);
 
 protected:
     // topic -> dealfunc

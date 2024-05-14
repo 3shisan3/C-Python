@@ -90,9 +90,10 @@ void object_to_json(py::object obj, json &parent)
     }
 }
 
-void MsgDeal::readRosBagContent(const std::string &bagPath)
+void MsgDeal::readRosBagContent(const std::string &bagPath, const std::vector<std::string> &vTopicName,
+                                unsigned int startStamp, unsigned int endStamp)
 {
-    py::scoped_interpreter guard{}; // 初始化 Python 解释器, 同lock_gurd，作用域结束自动回收
+    py::scoped_interpreter guard{}; // 初始化 Python 解释器
 
     try
     {
@@ -102,7 +103,13 @@ void MsgDeal::readRosBagContent(const std::string &bagPath)
         auto rsBag = py::module::import("rosbag");
         auto bag = rsBag.attr("Bag")(bagPath);
 
-        auto bagData = bag.attr("read_messages")();
+        py::list topics;
+        for (const auto &name : vTopicName)
+        {
+            topics.append(name);
+        }
+        auto bagData = startStamp == endStamp ? bag.attr("read_messages")(topics) :
+                                                bag.attr("read_messages")(topics, startStamp, endStamp);
         for (auto &dataPair : bagData)
         {
             auto tt = dataPair.cast<py::tuple>();
@@ -119,7 +126,7 @@ void MsgDeal::readRosBagContent(const std::string &bagPath)
             else
             {
                 // todo 先直接打印
-                py::print(root.dump());
+                py::print(topicName, ": ", root.dump());
             }
         }
     }
@@ -127,9 +134,4 @@ void MsgDeal::readRosBagContent(const std::string &bagPath)
     {
         std::cout << e.what() << std::endl;
     }
-}
-
-void MsgDeal::readRosBagContent(const std::string &bagPath, const std::string &topicName)
-{
-
 }

@@ -74,8 +74,8 @@ int main()
                   }
                   else
                   {
-                    std::string type_name = member.get_type().attr("__name__").cast<std::string>();  
-                    std::cout << "Type of object: " << type_name << std::endl;  
+                    std::string type_name = member.get_type().attr("__name__").cast<std::string>();
+                    std::cout << "Type of object: " << type_name << std::endl;
                   }
                 }
                 // if (member.is_none())
@@ -104,10 +104,25 @@ int main()
 
 #include "common/msg_deal.h"
 
-int main()
+int main(int argc, char *argv[])
 {
-  auto test = new MsgDeal();
-  test->readRosBagContent("../python_moudle/test.bag");
+    // 检查是否提供了足够的参数
+    if (argc < 2)
+    {
+        std::cerr << "Usage: " << argv[0] << " <file_path>" << std::endl;
+        auto test = new MsgDeal();
+        test->readRosBagContent("../python_moudle/test.bag");
+        return 1;
+    }
 
-  return 0;
+    // 第一个参数是程序名称，所以文件路径从第二个参数开始
+    std::string filePath = argv[1]; // 假设我们只关心第一个文件路径参数
+
+    // 输出捕获到的文件路径
+    std::cout << "File path: " << filePath << std::endl;
+
+    auto test = new MsgDeal();
+    test->readRosBagContent(filePath);
+
+    return 0;
 }
