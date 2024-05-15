@@ -102,26 +102,25 @@ int main()
 
 #include <iostream>
 
-#include "common/msg_deal.h"
-
-// 获取程序运行路径
-std::string getCurrentFolder(int argc, char *argv[])
-{
-    std::string execPath = argv[0];
-
-    size_t lastSLashPos = execPath.find_last_of("/");
-
-    return execPath.substr(0, lastSLashPos);
-}
-
+#include "utils_method.h"
+#include "msg_deal.h"
 
 int main(int argc, char *argv[])
 {
+    auto runPath = getCurrentFolder(argc, argv);
+    std::string dependDir = findSubdirectoryPath(runPath, "python_moudle");
+    while (dependDir.empty())
+    {
+        runPath += "/..";
+        dependDir = findSubdirectoryPath(runPath, "python_moudle");
+    }
+    MsgDeal::setDependPyMoudleDir(dependDir);
     // 检查是否提供了足够的参数
     if (argc < 2)
     {
         std::cerr << "Usage: " << argv[0] << " <file_path>" << std::endl;
-        auto test = new MsgDeal(getCurrentFolder(argc, argv));
+        auto test = new MsgDeal();
+
         test->readRosBagContent("../test.bag");
         return 1;
     }

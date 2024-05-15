@@ -13,7 +13,9 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 file(GLOB_RECURSE SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp")  
   
 # 添加头文件目录  
-include_directories(${ccCodePath}/src/common
+include_directories(
+    ${ccCodePath}/src/base
+    ${ccCodePath}/src/common
 )  
 
 # 编译生成可执行程序

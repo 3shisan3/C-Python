@@ -35,6 +35,16 @@ inline void getDateStamp(char * buf, size_t n)
 	strftime(buf, n, "%a, %d %b %Y %H:%M:%S %Z", &cur);
 }
 
+// 获取程序运行路径
+std::string getCurrentFolder(int argc, char *argv[])
+{
+    std::string execPath = argv[0];
+
+    size_t lastSLashPos = execPath.find_last_of("/");
+
+    return execPath.substr(0, lastSLashPos);
+}
+
 // 获取文件夹下某文件夹的路径
 inline std::string findSubdirectoryPath(const std::filesystem::path &directory, const std::string &subdir_name)  
 {  

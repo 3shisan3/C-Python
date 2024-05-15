@@ -7,7 +7,7 @@
 #include "pybind11/pytypes.h"
 
 #include "json.hpp"
-#include "utils_method.h"
+// #include "utils_method.h"
 
 namespace py = pybind11;
 using json = ::nlohmann::json;
@@ -91,22 +91,16 @@ void object_to_json(py::object obj, json &parent)
     }
 }
 
-MsgDeal::MsgDeal(const std::string &pathStr, PATH_TARGTE flag)
+std::string MsgDeal::s_pyMoudlePath_ = "../python_moudle";
+
+void MsgDeal::setDependPyMoudleDir(const std::string &pathStr)
 {
-    switch (flag)
-    {
-    case RUN_PATH:
-        m_pyMoudlePath_  = findSubdirectoryPath((pathStr + "/../../../"), "python_moudle");
-        break;
-    case PY_PATH:
-        m_pyMoudlePath_ = pathStr;
-        break;
-    default:
-        break;
-    }
+    // std::call_once(m_s_singleFlag, [&] {
+        s_pyMoudlePath_ = pathStr;
+    // });
 }
 
-void MsgDeal::readRosBagContent(const std::string &bagPath, const std::vector<std::string> &vTopicName,
+void MsgDeal::readRosBagContent(const std::string &bagPath, const std::vector<std::string> &vTopicNames,
                                 unsigned int startStamp, unsigned int endStamp)
 {
     py::scoped_interpreter guard{}; // 初始化 Python 解释器
@@ -114,14 +108,14 @@ void MsgDeal::readRosBagContent(const std::string &bagPath, const std::vector<st
     try
     {
         auto sys = py::module::import("sys");
-        auto pathStr = m_pyMoudlePath_ + "/thirdparty/";
+        auto pathStr = s_pyMoudlePath_ + "/thirdparty/";
         sys.attr("path").attr("insert")(0, pathStr);
 
         auto rsBag = py::module::import("rosbag");
         auto bag = rsBag.attr("Bag")(bagPath);
 
         py::list topics;
-        for (const auto &name : vTopicName)
+        for (const auto &name : vTopicNames)
         {
             topics.append(name);
         }
@@ -142,8 +136,7 @@ void MsgDeal::readRosBagContent(const std::string &bagPath, const std::vector<st
             }
             else
             {
-                // todo 先直接打印
-                py::print(topicName, ": ", root.dump());
+                defaultDealFunc(topicName, root.dump());
             }
         }
     }
@@ -151,4 +144,9 @@ void MsgDeal::readRosBagContent(const std::string &bagPath, const std::vector<st
     {
         std::cout << e.what() << std::endl;
     }
+}
+
+void MsgDeal::defaultDealFunc(const std::string &topicName, const std::string &jsonConetnt)
+{
+    py::print(topicName, ": ", jsonConetnt);
 }

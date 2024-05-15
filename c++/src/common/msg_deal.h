@@ -25,34 +25,28 @@ Version history
 class MsgDeal
 {
 public:
-    enum PATH_TARGTE
-    {
-        RUN_PATH,
-        PY_PATH
-    };
-
-    MsgDeal() : m_pyMoudlePath_("../python_moudle") {};
-    explicit MsgDeal(const std::string &path, PATH_TARGTE flag = RUN_PATH);
+    static void setDependPyMoudleDir(const std::string &pathStr);
 
     /**
      * @brief 解析指定rosbag包中数据
      * 
      * @param[in] bagPath               解析rogbag的文件路径
-     * @param[in] vTopicName            指定想要获取的topic集合
+     * @param[in] vTopicNames           指定想要获取的topic集合
      * @param[in] startStamp            过滤想要的时间段内信息，开始时间戳  （秒）
      * @param[in] endStamp              过滤想要的时间段内信息，结束时间戳  （秒）
      * 
      */
-    void readRosBagContent(const std::string &bagPath, const std::vector<std::string> &vTopicName = {},
+    void readRosBagContent(const std::string &bagPath, const std::vector<std::string> &vTopicNames = {},
                            unsigned int startStamp = 0, unsigned int endStamp = 0);
 
 protected:
+    virtual void defaultDealFunc(const std::string &topicName,const std::string &jsonContent);
+
     // topic -> dealfunc
     std::unordered_map<std::string, std::function<void(const std::string &)>> m_funcsMap;
 
 private:
-    // todo 可考虑使用全局变量，有其他对象涉及使用python
-    std::string m_pyMoudlePath_;
+    static std::string s_pyMoudlePath_;
 
 };
 
