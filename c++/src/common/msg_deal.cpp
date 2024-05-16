@@ -146,7 +146,7 @@ void MsgDeal::readRosBagContent(const std::string &bagPath, const std::vector<st
     }
 }
 
-void MsgDeal::defaultDealFunc(const std::string &topicName, const std::string &jsonConetnt)
+void MsgDeal::defaultDealFunc(const std::string &topicName, const std::string &jsonContent)
 {
-    py::print(topicName, ": ", jsonConetnt);
+    py::print(topicName, ": ", jsonContent);
 }

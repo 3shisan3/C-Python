@@ -101,9 +101,29 @@ int main()
 } */
 
 #include <iostream>
+#include <unistd.h>
 
 #include "utils_method.h"
 #include "msg_deal.h"
+
+class MsgDealExample : public MsgDeal
+{
+protected:    
+    void defaultDealFunc(const std::string &topicName,const std::string &jsonContent);
+
+};
+
+void MsgDealExample::defaultDealFunc(const std::string &topicName,const std::string &jsonContent)
+{
+     std::cout << topicName << ": " << jsonContent << std::endl;
+
+     while (true)
+     {
+        sleep(1);
+        std::cout << "wait" << std::endl;
+     }
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -114,12 +134,12 @@ int main(int argc, char *argv[])
         runPath += "/..";
         dependDir = findSubdirectoryPath(runPath, "python_moudle");
     }
-    MsgDeal::setDependPyMoudleDir(dependDir);
+    MsgDealExample::setDependPyMoudleDir(dependDir);
     // 检查是否提供了足够的参数
     if (argc < 2)
     {
         std::cerr << "Usage: " << argv[0] << " <file_path>" << std::endl;
-        auto test = new MsgDeal();
+        auto test = new MsgDealExample();
 
         test->readRosBagContent("../test.bag");
         return 1;

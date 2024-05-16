@@ -38,6 +38,29 @@ message(STATUS "ROOT_BUILD_DIR: ${CMAKE_CURRENT_BINARY_DIR}")
 # C++代码路径
 set(ccCodePath ${CMAKE_CURRENT_SOURCE_DIR}/c++)
 
+# 查找Python库  
+find_package(PythonLibs 3)
+# find_package(Python3 COMPONENTS Interpreter Development)
+
+# 添加条件需要链接的库文件 
+if(PythonLibs_FOUND)
+    message(STATUS "Python3 Lib found")
+    include_directories(${PYTHON_INCLUDE_DIRS})  
+
+	set(PYTHON_INCLUDE_DIRS_NOTE ${PYTHON_INCLUDE_DIRS})
+	list(APPEND PYTHON_LIBRARIES_NOTE ${PYTHON_LIBRARIES})
+    # 将库文件打包方法参考 git@github.com:3shisan3/communicate_lib.git 此处暂不使用
+else()
+    message(STATUS "Python3 Lib not found")
+	set(PYTHON_INCLUDE_DIRS_NOTE ${ccCodePath}/thirdparty/include/python3.10)
+	include_directories(${PYTHON_INCLUDE_DIRS_NOTE})
+	list(APPEND PYTHON_LIBRARIES_NOTE
+		${ccCodePath}/thirdparty/lib/libpython3.10.so.1.0
+	)
+endif()
+message(STATUS "${PROJECT_NAME} PYTHON_INCLUDE_DIRS: ${PYTHON_INCLUDE_DIRS_NOTE}")
+message(STATUS "${PROJECT_NAME} PYTHON_LIBRARIES: ${PYTHON_LIBRARIES_NOTE}")
+
 # 添加源代码文件  
 file(GLOB_RECURSE SOURCES ${ccCodePath}/src/*.cpp)
 # 子模块库存储
@@ -63,6 +86,8 @@ include_directories(${ccCodePath}/src
 
 # 生成动态库文件
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
+# 链接依赖关系，将子项目的源文件添加到主项目的构建过程中
+target_sources(${PROJECT_NAME} PUBLIC ${SubSources})
 
 # 添加需要链接的库文件
 target_link_libraries(${PROJECT_NAME} rosmsg_deal_base)
@@ -73,7 +98,7 @@ if (BUILD_TEST)
 	# add_definitions(-DGLOBAL_LOG_LEVEL=1)
 
 	message(STATUS "build test modules")
-    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test/app_demo ${CMAKE_BINARY_DIR}/app_demo)
+    # add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test/app_demo ${CMAKE_BINARY_DIR}/app_demo)
 endif()
 
 # 添加必要的安装动态库文件

@@ -1,11 +1,14 @@
 #ifndef MSG_DEAL_EXAMPLE_H
 #define MSG_DEAL_EXAMPLE_H
 
-#include "common/msg_deal.h"
+#include "msg_deal.h"
 
 
-class MsgDealExample : MsgDeal
+class MsgDealExample : public MsgDeal
 {
+
+protected:    
+    void defaultDealFunc(const std::string &topicName,const std::string &jsonContent);
 
 };
 
