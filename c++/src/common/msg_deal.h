@@ -46,6 +46,12 @@ protected:
     std::unordered_map<std::string, std::function<void(const std::string &)>> m_funcsMap;
 
 private:
+    enum class Status
+    {
+        RUNNING,
+        
+    };
+
     static std::string s_pyMoudlePath_;
 
 };

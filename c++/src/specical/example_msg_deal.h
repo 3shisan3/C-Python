@@ -8,7 +8,7 @@ class MsgDealExample : public MsgDeal
 {
 
 protected:    
-    void defaultDealFunc(const std::string &topicName,const std::string &jsonContent);
+    void defaultDealFunc(const std::string &topicName,const std::string &jsonContent) override;
 
 };
 

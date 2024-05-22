@@ -12,7 +12,7 @@
 namespace py = pybind11;
 using json = ::nlohmann::json;
 
-bool object_to_json(py::object obj, std::string &result)
+bool object_to_json(py::object obj, json &parent, const std::string &key)
 {
     // py::scoped_interpreter guard{};
 
@@ -30,14 +30,43 @@ bool object_to_json(py::object obj, std::string &result)
         obj = lst;
     }
 
+    py::object json_obj;
     try
     {
         py::object json_obj = dumps_func(obj);
-        result = json_obj.cast<std::string>();
     }
     catch(...)
     {
         return false;
+    }
+
+    try
+    {
+        if (py::isinstance<py::int_>(obj))
+        {
+            parent[key] = json_obj.cast<int>();
+        }
+        else if (py::isinstance<py::float_>(obj))
+        {
+            parent[key] = json_obj.cast<float>();
+        }
+        else if (py::isinstance<py::bool_>(obj))
+        {
+            parent[key] = json_obj.cast<bool>();
+        }
+        else if (py::isinstance<py::list>(obj) && py::len(obj) == 0)
+        {
+            parent[key] = json::array();
+        }
+        else
+        {
+            parent[key] = json_obj.cast<std::string>();
+        }
+    }
+    catch(...)
+    {
+        // py::print("has caught exception: ", e.what());
+        parent[key] = json_obj.cast<std::string>();
     }
     
     return true;
@@ -79,11 +108,7 @@ void object_to_json(py::object obj, json &parent)
             !py::hasattr(member, "__call__"))
         {
             std::string dataStr;
-            if (object_to_json(member, dataStr))
-            {
-                parent[member_name] = dataStr;
-            }
-            else
+            if (!object_to_json(member, parent, member_name))
             {
                 object_to_json(member, parent[member_name]);
             }
@@ -125,6 +150,10 @@ void MsgDeal::readRosBagContent(const std::string &bagPath, const std::vector<st
         {
             auto tt = dataPair.cast<py::tuple>();
             const std::string topicName = tt[0].cast<std::string>();
+            if (topicName != "/tpperception")
+            {
+                continue;
+            }
 
             json root;
             object_to_json(tt[1], root);
