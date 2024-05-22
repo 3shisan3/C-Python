@@ -16,6 +16,7 @@ Version history
 #ifndef MSG_DEAL_BASE_H
 #define MSG_DEAL_BASE_H
 
+#include <atomic>
 #include <functional>
 #include <string>
 #include <unordered_map>
@@ -25,6 +26,8 @@ Version history
 class MsgDeal
 {
 public:
+    MsgDeal();
+
     static void setDependPyMoudleDir(const std::string &pathStr);
 
     /**
@@ -46,6 +49,14 @@ protected:
     std::unordered_map<std::string, std::function<void(const std::string &)>> m_funcsMap;
 
 private:
+    enum class Status
+    {
+        RUNNING,
+        FREE,
+    };
+
+    static std::atomic<MsgDeal::Status> s_useStatus_;
+    std::atomic<MsgDeal::Status> m_useStatus_;
     static std::string s_pyMoudlePath_;
 
 };

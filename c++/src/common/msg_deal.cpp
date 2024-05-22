@@ -14,8 +14,6 @@ using json = ::nlohmann::json;
 
 bool object_to_json(py::object obj, std::string &result)
 {
-    // py::scoped_interpreter guard{};
-
     // 使用 Python 的 json.dumps 来将对象转换为 JSON 字符串
     py::object json_module = py::module::import("json");
     py::object dumps_func = json_module.attr("dumps");
@@ -45,8 +43,6 @@ bool object_to_json(py::object obj, std::string &result)
 
 void object_to_json(py::object obj, json &parent)
 {
-    // py::scoped_interpreter guard{};
-
     // 调用Python的dir()函数来获取对象的成员
     py::list members = py::module_::import("builtins").attr("dir")(obj);
     // 遍历所有成员, 并存入为json
@@ -91,7 +87,14 @@ void object_to_json(py::object obj, json &parent)
     }
 }
 
+std::atomic<MsgDeal::Status> MsgDeal::s_useStatus_ = MsgDeal::Status::FREE; 
 std::string MsgDeal::s_pyMoudlePath_ = "../python_moudle";
+
+
+MsgDeal::MsgDeal()
+{
+    m_useStatus_ = Status::FREE;
+}
 
 void MsgDeal::setDependPyMoudleDir(const std::string &pathStr)
 {
@@ -103,7 +106,21 @@ void MsgDeal::setDependPyMoudleDir(const std::string &pathStr)
 void MsgDeal::readRosBagContent(const std::string &bagPath, const std::vector<std::string> &vTopicNames,
                                 unsigned int startStamp, unsigned int endStamp)
 {
+    while (s_useStatus_ != Status::FREE)
+    {
+        // wait
+        m_useStatus_ = Status::FREE;
+        sleep(1);
+    }
+
+    s_useStatus_ = Status::RUNNING;
+    if (Py_IsInitialized())
+    {
+        // 等待上一轮guard的析构
+        sleep(1);
+    }
     py::scoped_interpreter guard{}; // 初始化 Python 解释器
+    m_useStatus_ = Status::RUNNING;
 
     try
     {
@@ -123,6 +140,11 @@ void MsgDeal::readRosBagContent(const std::string &bagPath, const std::vector<st
                                                 bag.attr("read_messages")(topics, startStamp, endStamp);
         for (auto &dataPair : bagData)
         {
+            if (m_useStatus_ == Status::FREE)
+            {
+                break;
+            }
+
             auto tt = dataPair.cast<py::tuple>();
             const std::string topicName = tt[0].cast<std::string>();
 
@@ -144,6 +166,9 @@ void MsgDeal::readRosBagContent(const std::string &bagPath, const std::vector<st
     {
         std::cout << e.what() << std::endl;
     }
+
+    m_useStatus_ = Status::FREE;
+    s_useStatus_ = Status::FREE;
 }
 
 void MsgDeal::defaultDealFunc(const std::string &topicName, const std::string &jsonContent)
