@@ -49,6 +49,8 @@ protected:
     std::unordered_map<std::string, std::function<void(const std::string &)>> m_funcsMap;
 
 private:
+    static void initPyEnviModule();
+
     enum class Status
     {
         RUNNING,
@@ -59,6 +61,7 @@ private:
     std::atomic<MsgDeal::Status> m_useStatus_;
     static std::string s_pyMoudlePath_;
 
+    // std::mutex m_mutex;
 };
 
 

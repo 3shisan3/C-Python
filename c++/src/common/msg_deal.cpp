@@ -1,6 +1,7 @@
 #include "msg_deal.h"
 
 #include <iostream>
+#include <mutex>
 
 #include "pybind11/pybind11.h"
 #include "pybind11/embed.h"
@@ -11,6 +12,23 @@
 
 namespace py = pybind11;
 using json = ::nlohmann::json;
+
+
+static py::object s_rosbag;
+
+static std::once_flag s_singleFlag;
+void MsgDeal::initPyEnviModule()
+{
+    std::call_once(s_singleFlag, [&] {
+        py::initialize_interpreter();
+
+        auto sys = py::module::import("sys");
+        auto pathStr = s_pyMoudlePath_ + "/thirdparty/";
+        sys.attr("path").attr("insert")(0, pathStr);
+
+        s_rosbag = py::module::import("rosbag");
+    });
+}
 
 bool object_to_json(py::object obj, std::string &result)
 {
@@ -90,10 +108,10 @@ void object_to_json(py::object obj, json &parent)
 std::atomic<MsgDeal::Status> MsgDeal::s_useStatus_ = MsgDeal::Status::FREE; 
 std::string MsgDeal::s_pyMoudlePath_ = "../python_moudle";
 
-
 MsgDeal::MsgDeal()
 {
     m_useStatus_ = Status::FREE;
+    initPyEnviModule();
 }
 
 void MsgDeal::setDependPyMoudleDir(const std::string &pathStr)
@@ -114,22 +132,11 @@ void MsgDeal::readRosBagContent(const std::string &bagPath, const std::vector<st
     }
 
     s_useStatus_ = Status::RUNNING;
-    if (Py_IsInitialized())
-    {
-        // 等待上一轮guard的析构
-        sleep(1);
-    }
-    py::scoped_interpreter guard{}; // 初始化 Python 解释器
     m_useStatus_ = Status::RUNNING;
 
     try
     {
-        auto sys = py::module::import("sys");
-        auto pathStr = s_pyMoudlePath_ + "/thirdparty/";
-        sys.attr("path").attr("insert")(0, pathStr);
-
-        auto rsBag = py::module::import("rosbag");
-        auto bag = rsBag.attr("Bag")(bagPath);
+        auto bag = s_rosbag.attr("Bag")(bagPath);
 
         py::list topics;
         for (const auto &name : vTopicNames)
@@ -168,6 +175,7 @@ void MsgDeal::readRosBagContent(const std::string &bagPath, const std::vector<st
     }
 
     m_useStatus_ = Status::FREE;
+    // py::finalize_interpreter();
     s_useStatus_ = Status::FREE;
 }
 

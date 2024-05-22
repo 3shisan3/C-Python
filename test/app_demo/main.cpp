@@ -101,6 +101,7 @@ int main()
 } */
 
 #include <iostream>
+#include <thread>
 #include <unistd.h>
 
 #include "utils_method.h"
@@ -139,9 +140,17 @@ int main(int argc, char *argv[])
     if (argc < 2)
     {
         std::cerr << "Usage: " << argv[0] << " <file_path>" << std::endl;
-        auto test = new MsgDealExample();
+        auto test1 = new MsgDeal();
+        auto test2 = new MsgDealExample();
 
-        test->readRosBagContent("../test.bag");
+        // std::thread thread2([&](){test1->readRosBagContent("../test.bag");});
+        // std::thread thread1([&](){test1->readRosBagContent("/home/shisan/program_running/gelanqu_2023-10-14-15-44-09.bag");});
+        
+        test1->readRosBagContent("../test.bag");
+        test1->readRosBagContent("/home/shisan/program_running/gelanqu_2023-10-14-15-44-09.bag");
+
+        // thread1.join();
+        // thread2.join();
         return 1;
     }
 
