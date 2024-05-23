@@ -14,11 +14,13 @@ def getRosMsgInfo(bag_path, topic_name):
     # msg = bag.read_messages(topics=topic_name)
     # for topic, msg, t in bag.read_messages(topics=topic_name):
     # for topic, msg, t in bag.read_messages(topics=['chatter', 'numbers']):
-    for test in bag.read_messages(topics=['chatter', 'numbers']):
+    for test in bag.read_messages(topics=topic_name):  
         print(type(test))
         topic, msg, t = test
         # print(msg.data)
         print(type(msg))
+        print(topic)
+        print(msg)
         # header = msg.header
         # header_seq = header.seq 
         # stamp_sec = header.stamp.secs

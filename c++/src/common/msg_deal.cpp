@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <mutex>
+#include <thread>
 
 #include "pybind11/pybind11.h"
 #include "pybind11/embed.h"
@@ -12,23 +13,6 @@
 
 namespace py = pybind11;
 using json = ::nlohmann::json;
-
-
-static py::object s_rosbag;
-
-static std::once_flag s_singleFlag;
-void MsgDeal::initPyEnviModule()
-{
-    std::call_once(s_singleFlag, [&] {
-        py::initialize_interpreter();
-
-        auto sys = py::module::import("sys");
-        auto pathStr = s_pyMoudlePath_ + "/thirdparty/";
-        sys.attr("path").attr("insert")(0, pathStr);
-
-        s_rosbag = py::module::import("rosbag");
-    });
-}
 
 bool object_to_json(py::object obj, std::string &result)
 {
@@ -107,11 +91,33 @@ void object_to_json(py::object obj, json &parent)
 
 std::atomic<MsgDeal::Status> MsgDeal::s_useStatus_ = MsgDeal::Status::FREE; 
 std::string MsgDeal::s_pyMoudlePath_ = "../python_moudle";
+std::atomic_int MsgDeal::s_insNums_ = 0;
+// std::unique_ptr<pybind11::gil_scoped_release> MsgDeal::s_gulRelease_ = nullptr;
 
 MsgDeal::MsgDeal()
 {
     m_useStatus_ = Status::FREE;
-    initPyEnviModule();
+    if (s_insNums_ == 0)
+    {
+        py::initialize_interpreter();
+
+        auto sys = py::module::import("sys");
+        auto pathStr = s_pyMoudlePath_ + "/thirdparty/";
+        sys.attr("path").attr("insert")(0, pathStr);
+
+        // s_gulRelease_ = std::make_unique<pybind11::gil_scoped_release>();
+    }
+    ++s_insNums_;
+}
+
+MsgDeal::~MsgDeal()
+{
+    --s_insNums_;
+    if (s_insNums_ == 0)
+    {
+        py::finalize_interpreter();
+        // s_gulRelease_ = nullptr;
+    }
 }
 
 void MsgDeal::setDependPyMoudleDir(const std::string &pathStr)
@@ -121,22 +127,28 @@ void MsgDeal::setDependPyMoudleDir(const std::string &pathStr)
     // });
 }
 
+
+// thread_local py::object t_rosbagModule_;
 void MsgDeal::readRosBagContent(const std::string &bagPath, const std::vector<std::string> &vTopicNames,
                                 unsigned int startStamp, unsigned int endStamp)
 {
     while (s_useStatus_ != Status::FREE)
-    {
-        // wait
+    {   // wait
         m_useStatus_ = Status::FREE;
         sleep(1);
     }
 
     s_useStatus_ = Status::RUNNING;
+    // py::scoped_interpreter guard{};
+    // py::initialize_interpreter();
     m_useStatus_ = Status::RUNNING;
 
     try
     {
-        auto bag = s_rosbag.attr("Bag")(bagPath);
+        pybind11::gil_scoped_acquire acquire;
+
+        auto rosbag = py::module::import("rosbag");
+        auto bag = rosbag.attr("Bag")(bagPath);
 
         py::list topics;
         for (const auto &name : vTopicNames)

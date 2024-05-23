@@ -106,7 +106,9 @@ int main()
 
 #include "utils_method.h"
 #include "msg_deal.h"
-
+#include "pybind11/pybind11.h"
+#include "pybind11/embed.h"
+#include "pybind11/pytypes.h"
 class MsgDealExample : public MsgDeal
 {
 protected:    
@@ -143,14 +145,18 @@ int main(int argc, char *argv[])
         auto test1 = new MsgDeal();
         auto test2 = new MsgDealExample();
 
-        // std::thread thread2([&](){test1->readRosBagContent("../test.bag");});
-        // std::thread thread1([&](){test1->readRosBagContent("/home/shisan/program_running/gelanqu_2023-10-14-15-44-09.bag");});
+        // MsgDeal::initPyEnviModule();
+        // pybind11::gil_scoped_release release{};
+        std::cout << "main 1111  " << PyGILState_Check() << std::endl;
+        std::thread thread2([&](){test1->readRosBagContent("../test.bag");});
+        std::cout << "main 2222  " << PyGILState_Check() << std::endl;
+        std::thread thread1([&](){test2->readRosBagContent("/home/shisan/program_running/gelanqu_2023-10-14-15-44-09.bag");});
         
-        test1->readRosBagContent("../test.bag");
-        test1->readRosBagContent("/home/shisan/program_running/gelanqu_2023-10-14-15-44-09.bag");
+        // test1->readRosBagContent("../test.bag");
+        // test1->readRosBagContent("/home/shisan/program_running/gelanqu_2023-10-14-15-44-09.bag");
 
-        // thread1.join();
-        // thread2.join();
+        thread1.join();
+        thread2.join();
         return 1;
     }
 

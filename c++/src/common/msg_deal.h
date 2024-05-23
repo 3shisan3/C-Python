@@ -18,15 +18,19 @@ Version history
 
 #include <atomic>
 #include <functional>
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
-
+/* namespace pybind11{
+    class gil_scoped_release;
+}; */
 class MsgDeal
 {
 public:
     MsgDeal();
+    ~MsgDeal();
 
     static void setDependPyMoudleDir(const std::string &pathStr);
 
@@ -49,7 +53,8 @@ protected:
     std::unordered_map<std::string, std::function<void(const std::string &)>> m_funcsMap;
 
 private:
-    static void initPyEnviModule();
+    static std::atomic_int s_insNums_;
+    // static std::unique_ptr<pybind11::gil_scoped_release> s_gulRelease_;
 
     enum class Status
     {
@@ -59,9 +64,8 @@ private:
 
     static std::atomic<MsgDeal::Status> s_useStatus_;
     std::atomic<MsgDeal::Status> m_useStatus_;
-    static std::string s_pyMoudlePath_;
 
-    // std::mutex m_mutex;
+    static std::string s_pyMoudlePath_;
 };
 
 
