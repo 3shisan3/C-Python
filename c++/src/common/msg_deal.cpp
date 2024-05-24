@@ -89,9 +89,10 @@ void object_to_json(py::object obj, json &parent)
     }
 }
 
-std::atomic<MsgDeal::Status> MsgDeal::s_useStatus_ = MsgDeal::Status::FREE;
-std::string MsgDeal::s_pyMoudlePath_ = "../python_moudle";
 std::atomic_int MsgDeal::s_insNums_ = 0;
+char MsgDeal::s_pyMoudlePath_[168] = "../python_moudle";
+std::atomic<MsgDeal::Status> MsgDeal::s_useStatus_ = MsgDeal::Status::FREE;
+
 // std::unique_ptr<pybind11::gil_scoped_release> MsgDeal::s_gulRelease_ = nullptr;
 
 MsgDeal::MsgDeal()
@@ -102,9 +103,9 @@ MsgDeal::MsgDeal()
         py::initialize_interpreter();
 
         auto sys = py::module::import("sys");
-        auto pathStr = s_pyMoudlePath_ + "/thirdparty/";
+        auto pathStr = (std::string)s_pyMoudlePath_ + "/thirdparty/";
         sys.attr("path").attr("insert")(0, pathStr);
-
+        
         // s_gulRelease_ = std::make_unique<pybind11::gil_scoped_release>();
     }
     ++s_insNums_;
@@ -123,7 +124,7 @@ MsgDeal::~MsgDeal()
 void MsgDeal::setDependPyMoudleDir(const std::string &pathStr)
 {
     // std::call_once(m_s_singleFlag, [&] {
-        s_pyMoudlePath_ = pathStr;
+        std::strcpy(s_pyMoudlePath_, pathStr.c_str());
     // });
 }
 
