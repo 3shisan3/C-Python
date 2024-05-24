@@ -105,27 +105,10 @@ int main()
 #include <unistd.h>
 
 #include "utils_method.h"
-#include "msg_deal.h"
+#include "example_msg_deal.h"
 #include "pybind11/pybind11.h"
 #include "pybind11/embed.h"
 #include "pybind11/pytypes.h"
-class MsgDealExample : public MsgDeal
-{
-protected:    
-    void defaultDealFunc(const std::string &topicName,const std::string &jsonContent);
-
-};
-
-void MsgDealExample::defaultDealFunc(const std::string &topicName,const std::string &jsonContent)
-{
-     std::cout << topicName << ": " << jsonContent << std::endl;
-
-     while (true)
-     {
-        sleep(1);
-        std::cout << "wait" << std::endl;
-     }
-}
 
 
 int main(int argc, char *argv[])
@@ -141,22 +124,30 @@ int main(int argc, char *argv[])
     // 检查是否提供了足够的参数
     if (argc < 2)
     {
+        // pybind11::initialize_interpreter();
         std::cerr << "Usage: " << argv[0] << " <file_path>" << std::endl;
-        auto test1 = new MsgDeal();
-        auto test2 = new MsgDealExample();
+        // auto test1 = new MsgDeal();
+        // auto test2 = std::make_shared<MsgDealExample>();
+         auto test2 = new MsgDealExample();
 
         // MsgDeal::initPyEnviModule();
-        // pybind11::gil_scoped_release release{};
-        std::cout << "main 1111  " << PyGILState_Check() << std::endl;
-        std::thread thread2([&](){test1->readRosBagContent("../test.bag");});
-        std::cout << "main 2222  " << PyGILState_Check() << std::endl;
-        std::thread thread1([&](){test2->readRosBagContent("/home/shisan/program_running/gelanqu_2023-10-14-15-44-09.bag");});
+        /* {
+          pybind11::gil_scoped_release release{};
+          std::cout << "main 1111  " << PyGILState_Check() << std::endl;
+          std::thread thread2([&](){test1->readRosBagContent("../test.bag");});
+          std::cout << "main 2222  " << PyGILState_Check() << std::endl;
+          std::thread thread1([&](){test1->readRosBagContent("../test.bag");});
+
+          thread1.join();
+          thread2.join();
+        } */
         
         // test1->readRosBagContent("../test.bag");
-        // test1->readRosBagContent("/home/shisan/program_running/gelanqu_2023-10-14-15-44-09.bag");
+        // test2->readRosBagContent("/home/shisan/program_running/gelanqu_2023-10-14-15-44-09.bag")
 
-        thread1.join();
-        thread2.join();
+        // pybind11::finalize_interpreter();
+        delete test2;
+
         return 1;
     }
 
