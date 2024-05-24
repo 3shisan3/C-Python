@@ -30,24 +30,24 @@ class MsgDeal
 {
 public:
     MsgDeal();
-    ~MsgDeal();
+    virtual ~MsgDeal();
 
     static void setDependPyMoudleDir(const std::string &pathStr);
 
     /**
      * @brief 解析指定rosbag包中数据
-     * 
+     *
      * @param[in] bagPath               解析rogbag的文件路径
      * @param[in] vTopicNames           指定想要获取的topic集合
      * @param[in] startStamp            过滤想要的时间段内信息，开始时间戳  （秒）
      * @param[in] endStamp              过滤想要的时间段内信息，结束时间戳  （秒）
-     * 
+     *
      */
     void readRosBagContent(const std::string &bagPath, const std::vector<std::string> &vTopicNames = {},
                            unsigned int startStamp = 0, unsigned int endStamp = 0);
 
 protected:
-    virtual void defaultDealFunc(const std::string &topicName,const std::string &jsonContent);
+    virtual void defaultDealFunc(const std::string &topicName, const std::string &jsonContent);
 
     // topic -> dealfunc
     std::unordered_map<std::string, std::function<void(const std::string &)>> m_funcsMap;
@@ -67,7 +67,5 @@ private:
 
     static std::string s_pyMoudlePath_;
 };
-
-
 
 #endif

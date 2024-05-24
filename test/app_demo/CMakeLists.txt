@@ -16,6 +16,7 @@ file(GLOB_RECURSE SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp")
 include_directories(
     ${ccCodePath}/src/base
     ${ccCodePath}/src/common
+    ${ccCodePath}/src/special
 )  
 
 # 编译生成可执行程序
@@ -23,6 +24,6 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 
 # 添加需要链接的库文件  
 target_link_libraries(${PROJECT_NAME} 
-    rosmsg_deal_base
+    C++_call_Python
 )
 

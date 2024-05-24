@@ -35,11 +35,11 @@ bool object_to_json(py::object obj, std::string &result)
         py::object json_obj = dumps_func(obj);
         result = json_obj.cast<std::string>();
     }
-    catch(...)
+    catch (...)
     {
         return false;
     }
-    
+
     return true;
 }
 
@@ -89,7 +89,7 @@ void object_to_json(py::object obj, json &parent)
     }
 }
 
-std::atomic<MsgDeal::Status> MsgDeal::s_useStatus_ = MsgDeal::Status::FREE; 
+std::atomic<MsgDeal::Status> MsgDeal::s_useStatus_ = MsgDeal::Status::FREE;
 std::string MsgDeal::s_pyMoudlePath_ = "../python_moudle";
 std::atomic_int MsgDeal::s_insNums_ = 0;
 // std::unique_ptr<pybind11::gil_scoped_release> MsgDeal::s_gulRelease_ = nullptr;
@@ -127,13 +127,12 @@ void MsgDeal::setDependPyMoudleDir(const std::string &pathStr)
     // });
 }
 
-
 // thread_local py::object t_rosbagModule_;
 void MsgDeal::readRosBagContent(const std::string &bagPath, const std::vector<std::string> &vTopicNames,
                                 unsigned int startStamp, unsigned int endStamp)
 {
     while (s_useStatus_ != Status::FREE)
-    {   // wait
+    { // wait
         m_useStatus_ = Status::FREE;
         sleep(1);
     }
