@@ -64,7 +64,7 @@ private:
         FREE,
     };
 
-    static char s_pyMoudlePath_[168];
+    static std::string s_pyMoudlePath_;
     
     static std::atomic<MsgDeal::Status> s_useStatus_;
     std::atomic<MsgDeal::Status> m_useStatus_;
