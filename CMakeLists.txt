@@ -19,6 +19,10 @@ endif()
 set(CMAKE_INSTALL_PREFIX "${USER_HOME_DIR}/program_running/${PROJECT_NAME}")
 # 暴露所有编译单元的编译命令
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+# 设置C++标准为C++17
+set(CMAKE_CXX_STANDARD 17)
+# 编译位置无关代码标志添加
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")  
 
 # 设置构建选项前提
 option(BUILD_TEST "编译测试部分用例"	ON)
@@ -87,7 +91,7 @@ include_directories(${ccCodePath}/src
 # 生成动态库文件
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
 # 链接依赖关系，将子项目的源文件添加到主项目的构建过程中
-target_sources(${PROJECT_NAME} PUBLIC ${SubSources})
+# target_sources(${PROJECT_NAME} PUBLIC ${SubSources})
 
 # 添加需要链接的库文件
 target_link_libraries(${PROJECT_NAME} rosmsg_deal_base)
@@ -104,9 +108,12 @@ endif()
 
 # 添加必要的安装动态库文件
 file(GLOB SHARED_LIBS ${ccCodePath}/thirdparty/lib/*.so.*)
+# 添加对外暴露头文件
+file(GLOB_RECURSE SHARED_INCLUDES ${ccCodePath}/src/interface/*.h)
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 install(FILES ${SHARED_LIBS} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+install(FILES ${SHARED_INCLUDES} DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/python_moudle DESTINATION ${CMAKE_INSTALL_PREFIX})
 
 # 设置RPATH, 确保运行时可以找到依赖库
