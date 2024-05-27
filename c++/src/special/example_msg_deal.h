@@ -10,6 +10,8 @@ public:
     void readRosBagContent(const std::string &bagPath, const std::vector<std::string> &vTopicNames = {},
                            unsigned int startStamp = 0, unsigned int endStamp = 0);
 
+    void dataWriteToJsonFile(const std::string &topicName, const std::string &jsonContent); 
+
 protected:
     void defaultDealFunc(const std::string &topicName, const std::string &jsonContent) override;
 

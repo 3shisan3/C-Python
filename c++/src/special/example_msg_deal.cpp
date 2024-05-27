@@ -9,7 +9,7 @@
 using json = nlohmann::json;
 // const std::string rosInfoSaveDir = "./rosbag_content";
 
-void MsgDealExample::defaultDealFunc(const std::string &topicName, const std::string &jsonContent)
+void MsgDealExample::dataWriteToJsonFile(const std::string &topicName, const std::string &jsonContent)
 {
     // 写入到文件中
     std::string fileName = m_saveJsonFileDir_ + "/f_" + topicName + ".json";
@@ -55,6 +55,11 @@ void MsgDealExample::defaultDealFunc(const std::string &topicName, const std::st
     fprintf(fp, "\n]\n");
 
     fflush(fp);
+}
+
+void MsgDealExample::defaultDealFunc(const std::string &topicName, const std::string &jsonContent)
+{
+    dataWriteToJsonFile(topicName, jsonContent);
 }
 
 void MsgDealExample::readRosBagContent(const std::string &bagPath, const std::vector<std::string> &vTopicNames,

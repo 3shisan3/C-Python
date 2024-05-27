@@ -46,6 +46,8 @@ public:
     void readRosBagContent(const std::string &bagPath, const std::vector<std::string> &vTopicNames = {},
                            unsigned int startStamp = 0, unsigned int endStamp = 0);
 
+    
+
 protected:
     virtual void defaultDealFunc(const std::string &topicName, const std::string &jsonContent);
 

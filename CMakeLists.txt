@@ -99,6 +99,7 @@ if (BUILD_TEST)
 
 	message(STATUS "build test modules")
     # add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test/app_demo ${CMAKE_BINARY_DIR}/app_demo)
+	# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test/interface_test ${CMAKE_BINARY_DIR}/interface_test)
 endif()
 
 # 添加必要的安装动态库文件

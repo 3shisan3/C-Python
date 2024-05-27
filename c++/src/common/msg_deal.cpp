@@ -139,7 +139,6 @@ void MsgDeal::readRosBagContent(const std::string &bagPath, const std::vector<st
     }
 
     s_useStatus_ = Status::RUNNING;
-    // py::scoped_interpreter guard{};
     // py::initialize_interpreter();
     m_useStatus_ = Status::RUNNING;
 
