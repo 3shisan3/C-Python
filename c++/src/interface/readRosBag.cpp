@@ -72,7 +72,8 @@ void CustomMsgDeal::setDefDealFunc(int model, const std::function<void(const std
 
 void CustomMsgDeal::setTopicDealFuncMap(std::unordered_map<std::string, std::function<void(const std::string &)>>&& dealmap)
 {
-    m_funcsMap.swap(dealmap);
+    // m_funcsMap.swap(dealmap);
+    m_funcsMap = std::move(dealmap);
 }
 
 void CustomMsgDeal::defaultDealFunc(const std::string &topicName, const std::string &jsonContent)
@@ -113,8 +114,15 @@ void readRosBag(const std::string& path, const LimitInfo &limit,
         onlyIns->setTopicDealFuncMap(std::move(dealFuncs));
     }
 
-    pybind11::gil_scoped_release release{};
-    onlyIns->readRosBagContent(path, limit.topicNames, limit.start, limit.end);
+    if (PyGILState_Check())
+    {
+        pybind11::gil_scoped_release release{};
+        onlyIns->readRosBagContent(path, limit.topicNames, limit.start, limit.end);
+    }
+    else
+    {
+        onlyIns->readRosBagContent(path, limit.topicNames, limit.start, limit.end);
+    }
 }
 
 
