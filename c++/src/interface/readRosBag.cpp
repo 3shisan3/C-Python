@@ -113,15 +113,11 @@ void readRosBag(const std::string& path, const LimitInfo &limit,
     {
         onlyIns->setTopicDealFuncMap(std::move(dealFuncs));
     }
-
+    
+    onlyIns->readRosBagContent(path, limit.topicNames, limit.start, limit.end);
     if (PyGILState_Check())
     {
-        pybind11::gil_scoped_release release{};
-        onlyIns->readRosBagContent(path, limit.topicNames, limit.start, limit.end);
-    }
-    else
-    {
-        onlyIns->readRosBagContent(path, limit.topicNames, limit.start, limit.end);
+        PyEval_SaveThread();
     }
 }
 

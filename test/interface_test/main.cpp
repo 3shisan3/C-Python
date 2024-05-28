@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include <filesystem>
+#include <thread>
+#include <unistd.h>
 
 // 获取程序运行路径
 std::string getCurrentFolder(int argc, char *argv[])
@@ -41,7 +43,19 @@ int main(int argc, char *argv[])
     if (argc < 2)
     {
         std::cerr << "Usage: " << argv[0] << " <file_path>" << std::endl;
-        c_py::rosbag::readRosBag("./test.bag");
+        std::thread t1([](){
+            c_py::rosbag::readRosBag("./test.bag");
+        });
+        t1.detach();
+        sleep(3);
+        std::thread t2([](){
+            c_py::rosbag::readRosBag("");
+        });
+        std::thread t3([&](){
+            c_py::rosbag::readRosBag("/home/shisan/program_running/gelanqu_2023-10-14-15-44-09.bag");
+        });
+        t2.join();
+        t3.join();
 
         return 1;
     }
